@@ -246,4 +246,70 @@ public class MySqlEmpleadoDAO implements EmpleadoDAO{
 		
 		return objEmpleado;
 	}
+
+	@Override
+	public List<Empleado> listaCompleja(String nombre, int idPais, int estado, Date fecInicio, Date fecFin) {
+		List<Empleado> lista = new ArrayList<Empleado>();
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		try {
+			conn = MySqlDBConexion.getConexion();
+			
+			String sql = "SELECT e.*, p.nombre FROM empleado e "
+					+ "inner join pais p on e.idPais = p.idPais "
+					+ "where 1=1 "
+					+ "and e.nombres like ? "
+					+ "and e.fechaNacimiento > ? "
+					+ "and e.fechaNacimiento < ? "
+					+ "and e.estado = ? "
+					+ "and e.idpais = ? ";
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, nombre);
+			pstm.setDate(2, fecInicio);
+			pstm.setDate(3, fecFin);
+			pstm.setInt(4, estado);
+			pstm.setInt(5, idPais);
+
+			log.info(">>>> " + pstm);
+
+			rs = pstm.executeQuery();
+			Empleado objEmpleado = null;
+			Pais objPais = null;
+			while(rs.next()) {
+				objEmpleado = new Empleado();
+				objEmpleado.setIdEmpleado(rs.getInt(1));
+				objEmpleado.setNombres(rs.getString(2));
+				objEmpleado.setFechaNacimiento(rs.getDate(3));
+				objEmpleado.setEstado(rs.getInt(4));
+				objEmpleado.setFechaRegistro(rs.getTimestamp(5));
+				objEmpleado.setFormateadoFecNac(FechaUtil.getFechaFormateadaYYYYMMdd(rs.getDate(3)));
+				
+				objPais = new Pais();
+				objPais.setIdPais(rs.getInt(6));
+				objPais.setNombre(rs.getString(7));
+				objEmpleado.setPais(objPais);
+				
+				lista.add(objEmpleado);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstm != null) pstm.close();
+				if (conn != null) conn.close();
+			} catch (Exception e2) {}
+		}
+		
+		return lista;
+	}
+	
+	
 }
+
+
+
+
+
+
+
