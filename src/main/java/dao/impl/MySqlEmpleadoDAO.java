@@ -256,21 +256,21 @@ public class MySqlEmpleadoDAO implements EmpleadoDAO{
 		try {
 			conn = MySqlDBConexion.getConexion();
 			
-			String sql = "SELECT e.*, p.nombre FROM empleado e "
-					+ "inner join pais p on e.idPais = p.idPais "
+			String sql = "SELECT e.*, p.nombre FROM empleado e inner join pais p "
+					+ "on e.idPais = p.idPais "
 					+ "where 1=1 "
-					+ "and e.nombres like ? "
-					+ "and e.fechaNacimiento > ? "
-					+ "and e.fechaNacimiento < ? "
+					+ "and e.nombres like ?"
+					+ "and ( ? = -1 or e.idPais = ? )"
 					+ "and e.estado = ? "
-					+ "and (? = -1 or e.idpais = ? )";
+					+ "and e.fechaNacimiento >= ? "
+					+ "and e.fechaNacimiento <= ? ";
 			pstm = conn.prepareStatement(sql);
 			pstm.setString(1, nombre);
-			pstm.setDate(2, fecInicio);
-			pstm.setDate(3, fecFin);
+			pstm.setInt(2, idPais);
+			pstm.setInt(3, idPais);
 			pstm.setInt(4, estado);
-			pstm.setInt(5, idPais);
-			pstm.setInt(6, idPais);
+			pstm.setDate(5, fecInicio);
+			pstm.setDate(6, fecFin);
 			
 			log.info(">>>> " + pstm);
 
@@ -301,7 +301,6 @@ public class MySqlEmpleadoDAO implements EmpleadoDAO{
 				if (conn != null) conn.close();
 			} catch (Exception e2) {}
 		}
-		
 		return lista;
 	}
 	
