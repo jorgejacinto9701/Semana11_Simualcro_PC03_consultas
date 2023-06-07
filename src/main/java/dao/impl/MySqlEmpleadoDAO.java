@@ -263,14 +263,15 @@ public class MySqlEmpleadoDAO implements EmpleadoDAO{
 					+ "and e.fechaNacimiento > ? "
 					+ "and e.fechaNacimiento < ? "
 					+ "and e.estado = ? "
-					+ "and e.idpais = ? ";
+					+ "and (? = -1 or e.idpais = ? )";
 			pstm = conn.prepareStatement(sql);
 			pstm.setString(1, nombre);
 			pstm.setDate(2, fecInicio);
 			pstm.setDate(3, fecFin);
 			pstm.setInt(4, estado);
 			pstm.setInt(5, idPais);
-
+			pstm.setInt(6, idPais);
+			
 			log.info(">>>> " + pstm);
 
 			rs = pstm.executeQuery();

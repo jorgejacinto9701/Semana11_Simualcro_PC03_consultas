@@ -16,11 +16,11 @@
 <script type="text/javascript" src="js/dataTables.bootstrap.min.js"></script>
 <link rel="stylesheet" href="css/dataTables.bootstrap.min.css"/>
 
-<title>Lista Empleado</title>
+<title>Lista Cliente</title>
 </head>
 <body>
 	<div class="container">
-		<h1>Lista Empleado</h1>
+		<h1>Lista Cliente</h1>
 
 		<div class="row" style="margin-top: 5%">
 			<div class="col-md-4">
@@ -32,12 +32,10 @@
 		</div>
 		<div class="row" style="margin-top: 2%">
 			<div class="col-md-4">
-				<label class="control-label">País</label> 
+				<label class="control-label">DNI</label> 
 			</div>	
 			<div class="col-md-5">
-				<select class="form-control" id="id_pais" name="pais">
-					<option value="-1">[Seleccione]</option>
-				</select>
+				<input class="form-control" type="text" name="dni" id="id_dni" >
 			</div>			
 		</div>
 		<div class="row" style="margin-top: 2%">
@@ -49,18 +47,14 @@
 			</div>			
 		</div>
 		<div class="row" style="margin-top: 2%">
-			<div class="col-md-3">
-				<label class="control-label" for="id_filtro">Fecha Nacimiento</label> 
+			<div class="col-md-4">
+				<label class="control-label" for="id_filtro">Categoría</label> 
 			</div>	
-			<div class="col-md-1"></div>
-			<div class="col-md-2">
-				<input	class="form-control" type="date" id="id_fecha_inicio">
+			<div class="col-md-5">
+				<select class="form-control" id="id_categoria" name="categoria">
+					<option value="-1">[Seleccione]</option>
+				</select>
 			</div>
-			<div class="col-md-1"></div>	
-			<div class="col-md-2">
-				<input	class="form-control" type="date" id="id_fecha_fin">
-			</div>
-			<div class="col-md-1"></div>
 			<div class="col-md-2">
 				<button type="button" class="btn btn-primary" id="id_btn_filtro">Filtro</button>
 			</div>	
@@ -73,10 +67,10 @@
 					<tr>
 						<th>Código</th>
 						<th>Nombres</th>
-						<th>Fecha Nacimiento</th>
+						<th>DNI</th>
 						<th>Fecha Registro</th>
 						<th>Estado</th>
-						<th>País</th>
+						<th>Categoría</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -111,9 +105,9 @@
 		                                        </div>
 		                                    </div> 	
 											<div class="form-group">
-		                                        <label class="col-lg-3 control-label" for="id_act_fecnac">Fecha Nacimiento</label>
+		                                        <label class="col-lg-3 control-label" for="id_act_dni">DNI</label>
 		                                        <div class="col-lg-8">
-													<input class="form-control" id="id_act_fecnac" type="text" readonly="readonly"/>
+													<input class="form-control" id="id_act_dni" type="text" readonly="readonly"/>
 		                                        </div>
 		                                    </div> 	 	
 		                                    <div class="form-group">
@@ -127,9 +121,9 @@
 		                                        </div>
 		                                    </div> 	 
 			                                <div class="form-group">
-		                                        <label class="col-lg-3 control-label" for="id_act_pais">País</label>
+		                                        <label class="col-lg-3 control-label" for="id_act_categoria">Categoría</label>
 		                                        <div class="col-lg-8">
-													<select class="form-control" id="id_act_pais" name="pais" disabled="disabled">
+													<select class="form-control" id="id_act_categoria" name="categoria" disabled="disabled">
 														<option value=" ">[Seleccione]</option>
 													</select>
 		                                        </div>
@@ -157,18 +151,16 @@
 	<script type="text/javascript">
 		$("#id_btn_filtro").click(function() {
 			var vnom = $("#id_nombre").val();
-			var vfecIni = $("#id_fecha_inicio").val();
-			var vfecFin = $("#id_fecha_fin").val();
-			var vpais = $("#id_pais").val();
+			var vcategoria = $("#id_categoria").val();
+			var vdni = $("#id_dni").val();
 			var vestado = $("#id_estado").is(":checked") ? "1": "0";
 			
 			console.log("Nombre : "  + vnom);
-			console.log("F.Inicio :"  + vfecIni);
-			console.log("F.Fin :"  + vfecFin);
-			console.log("País :"   + vpais);
+			console.log("DNI :"  + vdni);
+			console.log("Categoría :"   + vcategoria);
 			console.log("Estado :"  + vestado);
 			
-			$.getJSON("listaEmpleadoComplejo", {"estado": vestado,"pais":vpais,"nombre":vnom,"fechaInicio":vfecIni,"fechaFin":vfecFin}, function(data) {
+			$.getJSON("listaClienteComplejo", {"estado": vestado,"categoria":vcategoria,"nombre":vnom,"dni":vdni}, function(data) {
 				agregarGrilla(data);
 			});
 		});
@@ -190,33 +182,33 @@
 			            loadingIndicator: true
 			        },
 					columns:[
-						{data: "idEmpleado",className:'text-center'},
-						{data: "nombres",className:'text-center'},
-						{data: "formateadoFecNac",className:'text-center'},
+						{data: "idCliente",className:'text-center'},
+						{data: "nombre",className:'text-center'},
+						{data: "dni",className:'text-center'},
 						{data: "fechaRegistro",className:'text-center'},
 						{data: function(row, type, val, meta){
 							return row.estado == 1 ? "Activo" : "Inactivo";  
 						},className:'text-center'},
-						{data: "pais.nombre",className:'text-center'},
+						{data: "categoria.nombre",className:'text-center'},
 						{data: function(row, type, val, meta){
-							return '<button type="button" class="btn btn-info btn-sm" onClick="verFormulario(\'' + row.nombres + '\',\'' +  row.formateadoFecNac + '\',\'' +  row.estado + '\',\'' +  row.pais.idPais +'\');">Ver</button>';  
+							return '<button type="button" class="btn btn-info btn-sm" onClick="verFormulario(\'' + row.nombre + '\',\'' +  row.dni + '\',\'' +  row.estado + '\',\'' +  row.categoria.idCategoria +'\');">Ver</button>';  
 						},className:'text-center'},
 					]                                     
 			    });
 		}
 		
-		$.getJSON("cargaPais", {}, function (data){
+		$.getJSON("cargaCategoria",{}, function (data){
 			$.each(data, function(index, item){
-				$("#id_pais").append("<option value=" +  item.idPais +" >" +  item.nombre+ "</option>");
-				$("#id_act_pais").append("<option value=" +  item.idPais +" >" +  item.nombre+ "</option>");
-			});	
-		});	
+				$("#id_categoria").append("<option value='"+ item.idCategoria +"'>"+ item.nombre+"</option>");
+				$("#id_act_categoria").append("<option value='"+ item.idCategoria +"'>"+ item.nombre+"</option>");
+			})
+		});
 		
-		function verFormulario(nombre,fecha,estado,pais){
+		function verFormulario(nombre,dni,estado,categoria){
 			$("#id_act_nombre").val(nombre);
-			$("#id_act_fecnac").val(fecha);
+			$("#id_act_dni").val(dni);
 			$("#id_act_estado").val(estado);   
-			$("#id_act_pais").val(pais);
+			$("#id_act_categoria").val(categoria);
 			$("#id_div_modal_ver").modal("show");
 		}
 		

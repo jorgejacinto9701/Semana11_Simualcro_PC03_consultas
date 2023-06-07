@@ -2,7 +2,6 @@ package controlador;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,12 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import dao.EmpleadoDAO;
-import entity.Empleado;
+import dao.ClienteDAO;
+import entity.Cliente;
 import fabricas.Fabrica;
 
-@WebServlet("/listaEmpleadoComplejo")
-public class ListaEmpleadoComplejo extends HttpServlet{
+@WebServlet("/listaClienteComplejo")
+public class ListaClienteComplejoServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -27,25 +26,18 @@ public class ListaEmpleadoComplejo extends HttpServlet{
 	
 		//1 Traer todas las categorias de la base de datos
 		Fabrica fabrica = Fabrica.getFabrica(Fabrica.MYSQL);
-		EmpleadoDAO  dao = fabrica.getEmpleado();
+		ClienteDAO  dao = fabrica.getCliente();
 	
-		String vfechaInicio = req.getParameter("fechaInicio");
-		String vfechaFin = req.getParameter("fechaFin");
+		String vdni = req.getParameter("dni");
 		String vnombre = req.getParameter("nombre");
 		String vestado = req.getParameter("estado");
-		String vpais = req.getParameter("pais");	
+		String vcategoria = req.getParameter("categoria");	
+
 		
-		//Si la fecha de Inicio es vacio
-		if (vfechaInicio.equals("")) { vfechaInicio = "1900-01-01"; }
-		
-		//Si la fecha de Fin es vacio
-		if (vfechaFin.equals("")) { vfechaFin = "2999-12-31"; }
-		
-		List<Empleado> lista = dao.listaCompleja(vnombre+"%", 
-												 Integer.parseInt(vpais),
-												 Integer.parseInt(vestado), 
-												 Date.valueOf(vfechaInicio),
-												 Date.valueOf(vfechaFin));	
+		List<Cliente> lista = dao.listaClienteComplejo(vnombre+"%", 
+													   vdni,
+													   Integer.parseInt(vestado), 
+													   Integer.parseInt(vcategoria));	
 		
 		//2 Convertir las categorias en formato JSON
 		Gson gson = new Gson();
