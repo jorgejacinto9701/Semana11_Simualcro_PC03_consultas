@@ -88,7 +88,7 @@
 					<div class="modal-content">
 					<div class="modal-header" >
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4><span class="glyphicon glyphicon-ok-sign"></span>Datos de Empleado</h4>
+						<h4><span class="glyphicon glyphicon-ok-sign"></span>Datos de Cliente</h4>
 					</div>
 					<div class="modal-body" >
 						 <div class="panel-group" id="steps">
