@@ -168,6 +168,11 @@
 			console.log("País :"   + vpais);
 			console.log("Estado :"  + vestado);
 			
+			if ( valFechaInicioMayFechaFin("#id_fecha_inicio", "#id_fecha_fin")){
+				mostrarMensaje("La fecha fin es super a la fecha inicio");
+				return;
+			}
+			
 			$.getJSON("listaEmpleadoComplejo", {"estado": vestado,"pais":vpais,"nombre":vnom,"fechaInicio":vfecIni,"fechaFin":vfecFin}, function(data) {
 				agregarGrilla(data);
 			});
@@ -220,6 +225,19 @@
 			$("#id_div_modal_ver").modal("show");
 		}
 		
+		function valFechaInicioMayFechaFin(idIni, idFin){
+		    var fIni = $.trim($(idIni).val());
+		    var fFin = $.trim($(idFin).val());
+		    
+		    var dIni = new Date(fIni);
+		    var dFin = new Date(fFin);
+		    
+		    if (dIni > dFin){
+		        return true;
+		    }else{
+		        return false;
+		    }
+		}
 	</script>
 
 </body>
